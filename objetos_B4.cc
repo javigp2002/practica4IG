@@ -310,24 +310,31 @@ _cubo::_cubo(float tam) {
   vertices[0].x = -mitad_tam;
   vertices[0].y = -mitad_tam;
   vertices[0].z = -mitad_tam;
+
   vertices[1].x = mitad_tam;
   vertices[1].y = -mitad_tam;
   vertices[1].z = -mitad_tam;
+
   vertices[2].x = mitad_tam;
   vertices[2].y = -mitad_tam;
   vertices[2].z = mitad_tam;
+
   vertices[3].x = -mitad_tam;
   vertices[3].y = -mitad_tam;
   vertices[3].z = mitad_tam;
+
   vertices[4].x = -mitad_tam;
   vertices[4].y = mitad_tam;
   vertices[4].z = -mitad_tam;
+
   vertices[5].x = mitad_tam;
   vertices[5].y = mitad_tam;
   vertices[5].z = -mitad_tam;
+
   vertices[6].x = mitad_tam;
   vertices[6].y = mitad_tam;
   vertices[6].z = mitad_tam;
+
   vertices[7].x = -mitad_tam;
   vertices[7].y = mitad_tam;
   vertices[7].z = mitad_tam;
@@ -582,16 +589,16 @@ void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tipo,
   }
 
   // colores de las caras
-  // int n_c = 2 * (num_aux - 1) * num + 2 * num;
-  // colors_random(n_c);
+  int n_c = 2 * (num_aux - 1) * num + 2 * num;
+  colors_random(n_c);
 
-  // normales a caras
-  calcular_normales_caras();
+  // // normales a caras
+  // calcular_normales_caras();
 
-  // colores
+  // // colores
 
-  colors_Lambert_caras(0, 40, 40, 1.0, 0.8,
-                       0.0);  // estamos posicionando el foco
+  // colors_Lambert_caras(0, 40, 40, 1.0, 0.8,
+  //                      0.0);  // estamos posicionando el foco
 }
 
 //************************************************************************
@@ -715,6 +722,10 @@ _esfera::_esfera(float radio, int num1, int num2) {
     vert_aux.x = radio * cos(M_PI * i / num1 -
                              M_PI / 2.0);  // - pq empezamos a girar desde
     vert_aux.y = radio * sin(M_PI * i / num1 - M_PI / 2.0);
+
+    // vert_aux.x = radio * cos(M_PI * i / num1);
+    // vert_aux.y = radio * sin(M_PI * i / num1);
+
     vert_aux.z = 0.0;
     perfil.push_back(vert_aux);
   }
@@ -1481,3 +1492,81 @@ void _ametralladora::draw(_modo modo, float r, float g, float b, float grosor) {
 
   // glPopMatrix();
 };
+
+_ejercicioExamen::_ejercicioExamen() {
+  ancho = 1;
+  fondo = 1;
+  radio = 0.45;
+  alto = 1;
+
+  colors_chess(1.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+};
+
+void _ejercicioExamen::draw(_modo modo, float r, float g, float b,
+                            float grosor) {
+  glPushMatrix();
+  cubo.draw(modo, r, g, b, grosor);
+  glPopMatrix();
+
+  glPushMatrix();
+
+  glTranslatef(ancho / 2, 3 * alto / 4, fondo / 2);
+  glScalef(0.5, 0.5, 0.5);
+  cubo.draw(modo, r, g, b, grosor);
+
+  glPopMatrix();
+
+  glPushMatrix();
+
+  float escalaCilindro = 0.025;
+  float translateYCilindro = 3 * alto / 4 + alto / 4 + ALTURACILINDRO * 0.2 / 2;
+  glTranslatef(ancho / 2, translateYCilindro, fondo / 2);
+  glScalef(escalaCilindro, 0.2, escalaCilindro);
+  cilindro.draw(modo, r, g, b, grosor);
+
+  glPopMatrix();
+};
+
+_esferaEjercicio::_esferaEjercicio(float radio1, float radio2, int num1,
+                                   int num2) {
+  radio1 = 0.4;
+  radio2 = 0.6;
+
+  vector<_vertex3f> perfil;
+  _vertex3f vert_aux;
+  float cambioY = -radio1;
+  float cambioX = radio2;
+
+
+  for (int i = 01; i <= num1/2; i++) {
+     if (i >= num1 / 2) cambioY = -radio1;
+     vert_aux.x = radio2 * cos(M_PI * i / num1 -
+                               M_PI / 2.0);  // - pq empezamos a girar desde
+     vert_aux.y = radio2 * sin(M_PI * i / num1 - M_PI / 2.0) +cambioY;
+
+     vert_aux.z = 0.0;
+     perfil.push_back(vert_aux);
+  }
+  for (int i = 0; i < num1/2; i++) {
+    vert_aux.x = radio1 * cos(M_PI * i / num1 -
+                             M_PI / 2.0) +cambioX;  // - pq empezamos a girar desde
+    vert_aux.y = radio1 * sin(M_PI * i / num1 - M_PI / 2.0);
+
+    vert_aux.z = 0.0;
+    perfil.push_back(vert_aux);
+  }
+
+   vert_aux.x = radio1+cambioX;
+  vert_aux.y = 0;
+
+  vert_aux.z = 0;
+      perfil.push_back(vert_aux);
+
+  vert_aux.x = 0;
+  vert_aux.y = 0;
+
+  vert_aux.z = 0;
+      perfil.push_back(vert_aux);
+
+  parametros(perfil, num2, 2, 1, 0);
+}

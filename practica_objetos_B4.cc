@@ -24,8 +24,11 @@ typedef enum {
   CONO,
   ROTACION_PLY,
   EXCAVADORA,
-  AMETRALLADORA
-} _tipo_objeto;
+  AMETRALLADORA,
+  EJERCICIOEXAMEN,
+  ESFERAEJERCICIO
+}
+_tipo_objeto;
 _tipo_objeto t_objeto = CUBO;
 _modo modo = POINTS;
 
@@ -52,6 +55,8 @@ _esfera esfera(1, 8, 8);
 _rotacion_PLY rotacionPLY;
 _excavadora excavadora;
 _ametralladora ametralladora;
+_ejercicioExamen ejercicioExamen;
+_esferaEjercicio esferaEjercicio (0.4,0.6,20,20);
 
 // _objeto_ply *ply;
 
@@ -157,6 +162,13 @@ void draw_objects() {
 
     case AMETRALLADORA:
       ametralladora.draw(modo, 1.0, 0.0, 0.0, 5);
+      break;
+
+    case EJERCICIOEXAMEN:
+      ejercicioExamen.draw(modo, 1.0, 0.0, 0.0, 5);
+      break;
+    case ESFERAEJERCICIO:
+      esferaEjercicio.draw(modo, 1.0, 0.0, 0.0, 5);
       break;
   }
 }
@@ -326,6 +338,15 @@ void normal_key(unsigned char Tecla1, int x, int y) {
       else
         hay_animacion = true;
       break;
+
+    case 'M':
+      t_objeto = EJERCICIOEXAMEN;
+    break;
+
+    case 'Z':
+      t_objeto = ESFERAEJERCICIO;
+    break;
+    
   }
   glutPostRedisplay();
 }

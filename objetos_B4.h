@@ -447,3 +447,33 @@ class _ametralladora : public _triangulos3D {
   _mirilla mira;
   _cargador cargador;
 };
+
+
+// cargador
+//************************************************************************
+
+class _ejercicioExamen : public _triangulos3D {
+ public:
+  _ejercicioExamen();
+
+  void draw(_modo modo, float r, float g, float b, float grosor);
+
+
+  float ancho;
+  float alto;
+  float fondo;
+  float radio;
+  _cubo cubo;
+  _cilindro cilindro;
+};
+
+
+
+//*************************************************************************
+// clase esferaEjercicio
+//*************************************************************************
+
+class _esferaEjercicio : public _rotacion {
+ public:
+  _esferaEjercicio(float radio1 =0.4, float radio2=0.6,  int num1 = 8, int num2 = 20);
+};
