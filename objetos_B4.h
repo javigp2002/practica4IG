@@ -477,3 +477,24 @@ class _esferaEjercicio : public _rotacion {
  public:
   _esferaEjercicio(float radio1 =0.4, float radio2=0.6,  int num1 = 8, int num2 = 20);
 };
+
+
+class _piramideExamen: public _triangulos3D{
+  public:
+   _piramideExamen(float tam = 0.5, float al = 1.0);
+};
+
+class _rotacionExamen: public _triangulos3D{
+  public:
+   _rotacionExamen();
+    void draw(_modo modo, float r, float g, float b, float grosor);
+    void introduceSegundoNivel(_modo modo, float r, float g,
+                               float b, float grosor);
+
+    float alto, radio, ancho, fondo,  rotacion1,  rotacion2;
+
+   private:
+    _cubo cubo;
+    _cilindro cilindro;
+    _cono cono;
+};

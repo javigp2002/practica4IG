@@ -1493,39 +1493,173 @@ void _ametralladora::draw(_modo modo, float r, float g, float b, float grosor) {
   // glPopMatrix();
 };
 
-_ejercicioExamen::_ejercicioExamen() {
+//////////////////////////////////////////////////////
+//
+// EXAMEN
+//
+//////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////
+_piramideExamen::_piramideExamen(float tam, float al) {
+  vertices.resize(9);
+  vertices[0].x = -tam;
+  vertices[0].y = al / 2;
+  vertices[0].z = tam;
+  vertices[1].x = tam;
+  vertices[1].y = al / 2;
+  vertices[1].z = tam;
+  vertices[2].x = tam;
+  vertices[2].y = al / 2;
+  vertices[2].z = -tam;
+  vertices[3].x = -tam;
+  vertices[3].y = al / 2;
+  vertices[3].z = -tam;
+  vertices[4].x = 0;
+  vertices[4].y = al + al / 2;
+  vertices[4].z = 0;
+  vertices[5].x = -tam + tam / 2;
+  vertices[5].y = 0;
+  vertices[5].z = tam - tam / 2;
+  vertices[6].x = tam - tam / 2;
+  vertices[6].y = 0;
+  vertices[6].z = tam - tam / 2;
+  vertices[7].x = tam - tam / 2;
+  vertices[7].y = 0;
+  vertices[7].z = -tam + tam / 2;
+  vertices[8].x = -tam + tam / 2;
+  vertices[8].y = 0;
+  vertices[8].z = -tam + tam / 2;
+
+  caras.resize(14);
+  caras[0]._0 = 0;
+  caras[0]._1 = 1;
+  caras[0]._2 = 4;
+  caras[1]._0 = 1;
+  caras[1]._1 = 2;
+  caras[1]._2 = 4;
+  caras[2]._0 = 2;
+  caras[2]._1 = 3;
+  caras[2]._2 = 4;
+  caras[3]._0 = 3;
+  caras[3]._1 = 0;
+  caras[3]._2 = 4;
+  caras[4]._0 = 5;
+  caras[4]._1 = 6;
+  caras[4]._2 = 0;
+  caras[5]._0 = 6;
+  caras[5]._1 = 1;
+  caras[5]._2 = 0;
+  caras[6]._0 = 6;
+  caras[6]._1 = 7;
+  caras[6]._2 = 1;
+  caras[7]._0 = 7;
+  caras[7]._1 = 2;
+  caras[7]._2 = 1;
+  caras[8]._0 = 7;
+  caras[8]._1 = 8;
+  caras[8]._2 = 2;
+  caras[9]._0 = 8;
+  caras[9]._1 = 3;
+  caras[9]._2 = 2;
+  caras[10]._0 = 8;
+  caras[10]._1 = 5;
+  caras[10]._2 = 3;
+  caras[11]._0 = 5;
+  caras[11]._1 = 0;
+  caras[11]._2 = 3;
+  caras[12]._0 = 5;
+  caras[12]._1 = 7;
+  caras[12]._2 = 8;
+  caras[13]._0 = 5;
+  caras[13]._1 = 6;
+  caras[13]._2 = 7;
+
+  colores_caras.resize(14);
+  srand(10);
+  for (int i = 0; i < 14; i++) {
+    colores_caras[i].r = rand() % 1000 / 1000.0;
+    colores_caras[i].g = rand() % 1000 / 1000.0;
+    colores_caras[i].b = rand() % 1000 / 1000.0;
+  }
+}
+
+///////////////////////////////////////////////////////
+_rotacionExamen::_rotacionExamen() {
   ancho = 1;
   fondo = 1;
   radio = 0.45;
   alto = 1;
-
+  rotacion1 = 0;
+  rotacion2 = 1;
   colors_chess(1.0, 1.0, 0.0, 0.0, 0.0, 1.0);
 };
 
-void _ejercicioExamen::draw(_modo modo, float r, float g, float b,
-                            float grosor) {
+void _rotacionExamen::draw(_modo modo, float r, float g, float b,
+                           float grosor) {
+  // cubo base
   glPushMatrix();
   cubo.draw(modo, r, g, b, grosor);
   glPopMatrix();
 
-  glPushMatrix();
+  // fin cubobase
 
-  glTranslatef(ancho / 2, 3 * alto / 4, fondo / 2);
+  float translateX = ancho / 2;
+  float translateY = 3 * alto / 4 + alto / 4 + ALTURACILINDRO * 0.2 / 2;
+  float translateZ = fondo / 2;
+
+  // primera rotacion
+  glPushMatrix();
+  glTranslatef(translateX, 0, translateZ);
+  glRotatef(rotacion1, 0, 1, 0);
+  introduceSegundoNivel(modo, r, g, b, grosor);
+  glPopMatrix();
+
+  glPopMatrix();  // PRIMERA ROTACION
+};
+
+
+void _rotacionExamen::introduceSegundoNivel(_modo modo, float r, float g,
+                               float b, float grosor){
+   glPushMatrix();
+  glTranslatef(0, 3 * alto / 4, 0);
   glScalef(0.5, 0.5, 0.5);
   cubo.draw(modo, r, g, b, grosor);
-
   glPopMatrix();
 
+  // cilindro
   glPushMatrix();
-
-  float escalaCilindro = 0.025;
+  float escalaCilindroAncho = 0.025;
+  float escalaCilindroAlto = 0.2 * rotacion2;
   float translateYCilindro = 3 * alto / 4 + alto / 4 + ALTURACILINDRO * 0.2 / 2;
-  glTranslatef(ancho / 2, translateYCilindro, fondo / 2);
-  glScalef(escalaCilindro, 0.2, escalaCilindro);
+  float translateXCilindro = 0;
+  glTranslatef(translateXCilindro, translateYCilindro, 0);
+  glRotatef(90, 0, 1, 0);
+  glRotatef(45, 1, 0, 0);
+  glScalef(escalaCilindroAncho, escalaCilindroAlto, escalaCilindroAncho);
   cilindro.draw(modo, r, g, b, grosor);
+  glPopMatrix();
+
+
+  glPushMatrix();
+  float temp = (ALTURACILINDRO * escalaCilindroAlto) / 2;
+  float temp2 = sqrt((temp * temp + temp * temp));
+  float translateXCono = translateXCilindro + temp*sin(45);
+  float translateYCono =
+      translateYCilindro + temp*sin(45);
+  float translateZCono = 0;
+  float escalaConoAlto = 0.2;
+
+  glTranslatef(translateXCono, translateYCono, translateZCono);
+  glRotatef(90, 0, 1, 0);
+  glRotatef(90, 1, 0, 0);
+  // glTranslatef(0, -3 * escalaConoAlto/2, 0);
+  glScalef(escalaCilindroAncho * 2, escalaConoAlto, escalaCilindroAncho * 2);
+  cono.draw(modo, r, g, b, grosor);
 
   glPopMatrix();
 };
+
+////////////////////////////////////////////////////////////////////////////////////////
 
 _esferaEjercicio::_esferaEjercicio(float radio1, float radio2, int num1,
                                    int num2) {
@@ -1537,36 +1671,29 @@ _esferaEjercicio::_esferaEjercicio(float radio1, float radio2, int num1,
   float cambioY = -radio1;
   float cambioX = radio2;
 
+  for (int i = 1; i <= num1 / 2 + 1; i++) {
+    if (i >= num1 / 2) cambioY = -radio1;
+    vert_aux.x = radio2 * cos(M_PI * i / num1 -
+                              M_PI / 2.0);  // - pq empezamos a girar desde
+    vert_aux.y = radio2 * sin(M_PI * i / num1 - M_PI / 2.0) + cambioY;
 
-  for (int i = 01; i <= num1/2; i++) {
-     if (i >= num1 / 2) cambioY = -radio1;
-     vert_aux.x = radio2 * cos(M_PI * i / num1 -
-                               M_PI / 2.0);  // - pq empezamos a girar desde
-     vert_aux.y = radio2 * sin(M_PI * i / num1 - M_PI / 2.0) +cambioY;
-
-     vert_aux.z = 0.0;
-     perfil.push_back(vert_aux);
+    vert_aux.z = 0.0;
+    perfil.push_back(vert_aux);
   }
-  for (int i = 0; i < num1/2; i++) {
-    vert_aux.x = radio1 * cos(M_PI * i / num1 -
-                             M_PI / 2.0) +cambioX;  // - pq empezamos a girar desde
+  for (int i = 1; i <= num1 / 2; i++) {
+    vert_aux.x = radio1 * cos(M_PI * i / num1 - M_PI / 2.0) +
+                 cambioX;  // - pq empezamos a girar desde
     vert_aux.y = radio1 * sin(M_PI * i / num1 - M_PI / 2.0);
 
     vert_aux.z = 0.0;
     perfil.push_back(vert_aux);
   }
 
-   vert_aux.x = radio1+cambioX;
-  vert_aux.y = 0;
-
-  vert_aux.z = 0;
-      perfil.push_back(vert_aux);
-
   vert_aux.x = 0;
   vert_aux.y = 0;
 
   vert_aux.z = 0;
-      perfil.push_back(vert_aux);
+  perfil.push_back(vert_aux);
 
   parametros(perfil, num2, 2, 1, 0);
 }

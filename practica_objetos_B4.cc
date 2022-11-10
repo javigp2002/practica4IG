@@ -25,8 +25,9 @@ typedef enum {
   ROTACION_PLY,
   EXCAVADORA,
   AMETRALLADORA,
-  EJERCICIOEXAMEN,
-  ESFERAEJERCICIO
+  ESFERAEJERCICIO,
+  PIRAMIDEEXAMEN,
+  ROTACIONEXAMEN
 }
 _tipo_objeto;
 _tipo_objeto t_objeto = CUBO;
@@ -55,8 +56,9 @@ _esfera esfera(1, 8, 8);
 _rotacion_PLY rotacionPLY;
 _excavadora excavadora;
 _ametralladora ametralladora;
-_ejercicioExamen ejercicioExamen;
 _esferaEjercicio esferaEjercicio (0.4,0.6,20,20);
+_piramideExamen piramideExamen;
+_rotacionExamen rotacionExamen;
 
 // _objeto_ply *ply;
 
@@ -164,11 +166,14 @@ void draw_objects() {
       ametralladora.draw(modo, 1.0, 0.0, 0.0, 5);
       break;
 
-    case EJERCICIOEXAMEN:
-      ejercicioExamen.draw(modo, 1.0, 0.0, 0.0, 5);
-      break;
     case ESFERAEJERCICIO:
       esferaEjercicio.draw(modo, 1.0, 0.0, 0.0, 5);
+      break;
+    case PIRAMIDEEXAMEN:
+      piramideExamen.draw(modo, 1.0, 0.0, 0.0, 5);
+      break;
+    case ROTACIONEXAMEN:
+      rotacionExamen.draw(modo, 1.0, 0.0, 0.0, 5);
       break;
   }
 }
@@ -339,12 +344,15 @@ void normal_key(unsigned char Tecla1, int x, int y) {
         hay_animacion = true;
       break;
 
-    case 'M':
-      t_objeto = EJERCICIOEXAMEN;
-    break;
-
     case 'Z':
       t_objeto = ESFERAEJERCICIO;
+    break;
+    case 'W':
+      t_objeto = PIRAMIDEEXAMEN;
+    break;
+
+    case 'I':
+      t_objeto = ROTACIONEXAMEN;
     break;
     
   }
@@ -458,6 +466,20 @@ void special_key(int Tecla1, int x, int y) {
       if (ametralladora.giro_mirilla < ametralladora.giro_mirilla_min)
         ametralladora.giro_mirilla = ametralladora.giro_mirilla_min;
       break;
+    case GLUT_KEY_F9:
+      rotacionExamen.rotacion1 += 5;
+      break;
+    case GLUT_KEY_F10:
+      rotacionExamen.rotacion1 -= 5;
+      break;
+
+    case GLUT_KEY_F11:
+      rotacionExamen.rotacion2 += 0.1;
+      break;
+    case GLUT_KEY_F12:
+      rotacionExamen.rotacion2 -= 0.1;
+      break;
+
   }
 
   glutPostRedisplay();
