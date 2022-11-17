@@ -136,6 +136,28 @@ void _triangulos3D::draw_solido_colores_vertices() {
   }
   glEnd();
 }
+
+//*************************************************************************
+// dibujar en modo plano
+//*************************************************************************
+
+void _triangulos3D::draw_solido_plano() {
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glBegin(GL_TRIANGLES);
+
+  int num_tot_caras = caras.size();
+
+  for (int i = 0; i < num_tot_caras; i++) {
+    glNormal3f(normales_caras[i].r, normales_caras[i].g,
+               normales_caras[i].b);  // opengl colorea
+
+    glVertex3fv((GLfloat *)&vertices[caras[i]._0]);
+    glVertex3fv((GLfloat *)&vertices[caras[i]._1]);
+    glVertex3fv((GLfloat *)&vertices[caras[i]._2]);
+  }
+  glEnd();
+}
+
 //*************************************************************************
 // dibujar con distintos modos
 //*************************************************************************
@@ -156,6 +178,9 @@ void _triangulos3D::draw(_modo modo, float r, float g, float b, float grosor) {
       break;
     case SOLID_COLORS_VERTS:
       draw_solido_colores_vertices();
+      break;
+    case SOLID_FLAT:
+      draw_solido_plano();
       break;
   }
 }
@@ -260,6 +285,8 @@ void _triangulos3D::calcular_normales_vertices() {
 
   n_v = vertices.size();
   normales_vertices.resize(n_v);
+
+  // igual q la cara pero con vertices
 }
 
 void _triangulos3D::colors_Lambert_caras(float l_x, float l_y, float l_z,
@@ -472,9 +499,9 @@ void _objeto_ply::parametros(char *archivo) {
   // normales a caras
   calcular_normales_caras();
 
-  // colores
+  // // colores
 
-  colors_Lambert_caras(0, 40, 40, 1.0, 0.8,
+  colors_Lambert_caras(-20, 20, 10, 1.0, 0.8,
                        0.0);  // estamos posicionando el foco
 
   // colores_caras.resize(n_car);
@@ -953,7 +980,7 @@ _canon::_canon() {
 
 void _canon::draw(_modo modo, float r, float g, float b, float grosor) {
   float altoCilindros = alto / 2;
-  float transZCilindros = alto / 2.0;
+  // float transZCilindros = alto / 2.0;
   float radio_medium = radio / 8;
 
   float radioCanonChico = (radio / 8) / 3;
@@ -1500,87 +1527,84 @@ void _ametralladora::draw(_modo modo, float r, float g, float b, float grosor) {
 //////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////
-_piramideExamen::_piramideExamen(float tam, float al) {
-  vertices.resize(9);
-  vertices[0].x = -tam;
-  vertices[0].y = al / 2;
-  vertices[0].z = tam;
-  vertices[1].x = tam;
-  vertices[1].y = al / 2;
-  vertices[1].z = tam;
-  vertices[2].x = tam;
-  vertices[2].y = al / 2;
-  vertices[2].z = -tam;
-  vertices[3].x = -tam;
-  vertices[3].y = al / 2;
-  vertices[3].z = -tam;
-  vertices[4].x = 0;
-  vertices[4].y = al + al / 2;
-  vertices[4].z = 0;
-  vertices[5].x = -tam + tam / 2;
-  vertices[5].y = 0;
-  vertices[5].z = tam - tam / 2;
-  vertices[6].x = tam - tam / 2;
-  vertices[6].y = 0;
-  vertices[6].z = tam - tam / 2;
-  vertices[7].x = tam - tam / 2;
-  vertices[7].y = 0;
-  vertices[7].z = -tam + tam / 2;
-  vertices[8].x = -tam + tam / 2;
-  vertices[8].y = 0;
-  vertices[8].z = -tam + tam / 2;
+_cuboExamen::_cuboExamen(float tam, float al) {
+  // vertices
 
-  caras.resize(14);
+  float val = tam;
+
+  vertices.resize(8);
+
+  vertices[0].x = -val;
+  vertices[0].y = -val;
+  vertices[0].z = -val;
+
+  vertices[1].x = val;
+  vertices[1].y = -val;
+  vertices[1].z = -val;
+
+  vertices[2].x = val;
+  vertices[2].y = -val;
+  vertices[2].z = val;
+
+  vertices[3].x = -val;
+  vertices[3].y = -val;
+  vertices[3].z = val;
+
+  vertices[4].x = -val;
+  vertices[4].y = 2 * val;
+  vertices[4].z = -val;
+
+  vertices[5].x = val;
+  vertices[5].y = val;
+  vertices[5].z = -val;
+
+  vertices[6].x = -val;
+  vertices[6].y = val;
+  vertices[6].z = val;
+
+  // triangulos
+
+  caras.resize(11);
+
   caras[0]._0 = 0;
-  caras[0]._1 = 1;
-  caras[0]._2 = 4;
-  caras[1]._0 = 1;
-  caras[1]._1 = 2;
-  caras[1]._2 = 4;
+  caras[0]._1 = 6;
+  caras[0]._2 = 3;
+  caras[1]._0 = 0;
+  caras[1]._1 = 4;
+  caras[1]._2 = 6;
   caras[2]._0 = 2;
   caras[2]._1 = 3;
-  caras[2]._2 = 4;
-  caras[3]._0 = 3;
-  caras[3]._1 = 0;
-  caras[3]._2 = 4;
-  caras[4]._0 = 5;
-  caras[4]._1 = 6;
-  caras[4]._2 = 0;
-  caras[5]._0 = 6;
-  caras[5]._1 = 1;
-  caras[5]._2 = 0;
-  caras[6]._0 = 6;
-  caras[6]._1 = 7;
-  caras[6]._2 = 1;
-  caras[7]._0 = 7;
-  caras[7]._1 = 2;
-  caras[7]._2 = 1;
-  caras[8]._0 = 7;
-  caras[8]._1 = 8;
-  caras[8]._2 = 2;
-  caras[9]._0 = 8;
-  caras[9]._1 = 3;
-  caras[9]._2 = 2;
-  caras[10]._0 = 8;
-  caras[10]._1 = 5;
-  caras[10]._2 = 3;
-  caras[11]._0 = 5;
-  caras[11]._1 = 0;
-  caras[11]._2 = 3;
-  caras[12]._0 = 5;
-  caras[12]._1 = 7;
-  caras[12]._2 = 8;
-  caras[13]._0 = 5;
-  caras[13]._1 = 6;
-  caras[13]._2 = 7;
+  caras[2]._2 = 6;
+  caras[3]._0 = 2;
+  caras[3]._1 = 6;
+  caras[3]._2 = 5;
+  caras[4]._0 = 1;
+  caras[4]._1 = 2;
+  caras[4]._2 = 5;
+  caras[5]._0 = 0;
+  caras[5]._1 = 5;
+  caras[5]._2 = 1;
+  caras[6]._0 = 1;
+  caras[6]._1 = 5;
+  caras[6]._2 = 2;
 
-  colores_caras.resize(14);
-  srand(10);
-  for (int i = 0; i < 14; i++) {
-    colores_caras[i].r = rand() % 1000 / 1000.0;
-    colores_caras[i].g = rand() % 1000 / 1000.0;
-    colores_caras[i].b = rand() % 1000 / 1000.0;
-  }
+  caras[7]._0 = 0;
+  caras[7]._1 = 1;
+  caras[7]._2 = 2;
+  caras[8]._0 = 0;
+  caras[8]._1 = 2;
+  caras[8]._2 = 3;
+
+  caras[9]._0 = 4;
+  caras[9]._1 = 6;
+  caras[9]._2 = 5;
+  caras[10]._0 = 0;
+  caras[10]._1 = 4;
+  caras[10]._2 = 5;
+
+  // colores caras
+
+  colors_random();
 }
 
 ///////////////////////////////////////////////////////
@@ -1589,111 +1613,96 @@ _rotacionExamen::_rotacionExamen() {
   fondo = 1;
   radio = 0.45;
   alto = 1;
-  rotacion1 = 0;
-  rotacion2 = 1;
+  rotacion1 = 1;
+  rotacion2 = 0;
   colors_chess(1.0, 1.0, 0.0, 0.0, 0.0, 1.0);
 };
 
 void _rotacionExamen::draw(_modo modo, float r, float g, float b,
                            float grosor) {
-  // cubo base
   glPushMatrix();
-  cubo.draw(modo, r, g, b, grosor);
+  glScalef(0.75, 1.5, 1.25);
+  prisma.draw(modo, r, g, b, grosor);
   glPopMatrix();
 
-  // fin cubobase
-
-  float translateX = ancho / 2;
-  float translateY = 3 * alto / 4 + alto / 4 + ALTURACILINDRO * 0.2 / 2;
-  float translateZ = fondo / 2;
-
-  // primera rotacion
-  glPushMatrix();
-  glTranslatef(translateX, 0, translateZ);
-  glRotatef(rotacion1, 0, 1, 0);
   introduceSegundoNivel(modo, r, g, b, grosor);
-  glPopMatrix();
-
-  glPopMatrix();  // PRIMERA ROTACION
+  // // fin cubobase
 };
 
-
 void _rotacionExamen::introduceSegundoNivel(_modo modo, float r, float g,
-                               float b, float grosor){
-   glPushMatrix();
-  glTranslatef(0, 3 * alto / 4, 0);
-  glScalef(0.5, 0.5, 0.5);
-  cubo.draw(modo, r, g, b, grosor);
-  glPopMatrix();
+                                            float b, float grosor) {
+  float escalaAltoCil = 0.45 * rotacion1;  // nivel1
+  float escalaRadioCil = 0.03;
+  float transXCil = 0.75 / 2;
+  float transYCil = 1 * 1.5 / 4.0;
 
-  // cilindro
   glPushMatrix();
-  float escalaCilindroAncho = 0.025;
-  float escalaCilindroAlto = 0.2 * rotacion2;
-  float translateYCilindro = 3 * alto / 4 + alto / 4 + ALTURACILINDRO * 0.2 / 2;
-  float translateXCilindro = 0;
-  glTranslatef(translateXCilindro, translateYCilindro, 0);
-  glRotatef(90, 0, 1, 0);
-  glRotatef(45, 1, 0, 0);
-  glScalef(escalaCilindroAncho, escalaCilindroAlto, escalaCilindroAncho);
+  glTranslatef(transXCil, transYCil, 0);
+  glRotatef(-90, 0, 0, 1);
+  glTranslatef(0, ALTURACILINDRO * escalaAltoCil / 2, 0);
+  glScalef(escalaRadioCil, escalaAltoCil, escalaRadioCil);
   cilindro.draw(modo, r, g, b, grosor);
   glPopMatrix();
 
+  float escaladoAspa = 0.4;
 
   glPushMatrix();
-  float temp = (ALTURACILINDRO * escalaCilindroAlto) / 2;
-  float temp2 = sqrt((temp * temp + temp * temp));
-  float translateXCono = translateXCilindro + temp*sin(45);
-  float translateYCono =
-      translateYCilindro + temp*sin(45);
-  float translateZCono = 0;
-  float escalaConoAlto = 0.2;
+  glTranslatef(transXCil + ALTURACILINDRO * escalaAltoCil, transYCil,
+               escalaRadioCil * RADIOCILINDRO);
 
-  glTranslatef(translateXCono, translateYCono, translateZCono);
   glRotatef(90, 0, 1, 0);
-  glRotatef(90, 1, 0, 0);
-  // glTranslatef(0, -3 * escalaConoAlto/2, 0);
-  glScalef(escalaCilindroAncho * 2, escalaConoAlto, escalaCilindroAncho * 2);
-  cono.draw(modo, r, g, b, grosor);
+  glRotatef(rotacion2, 1, 0, 0);  // nivel2
 
+  glScalef(0.05 * escaladoAspa, 1.2 * escaladoAspa, 0.2 * escaladoAspa);
+  aspa.draw(modo, r, g, b, grosor);
   glPopMatrix();
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////
 
-_esferaEjercicio::_esferaEjercicio(float radio1, float radio2, int num1,
-                                   int num2) {
-  radio1 = 0.4;
-  radio2 = 0.6;
+_barridoEjercicio::_barridoEjercicio(float radio1, float ancho, int num1,
+                                     int num2) {
+  radio1 = 0.5;
 
   vector<_vertex3f> perfil;
   _vertex3f vert_aux;
-  float cambioY = -radio1;
-  float cambioX = radio2;
+  float cambioY = 0.3;
+  float cambioX = 0.2;
 
-  for (int i = 1; i <= num1 / 2 + 1; i++) {
-    if (i >= num1 / 2) cambioY = -radio1;
-    vert_aux.x = radio2 * cos(M_PI * i / num1 -
-                              M_PI / 2.0);  // - pq empezamos a girar desde
-    vert_aux.y = radio2 * sin(M_PI * i / num1 - M_PI / 2.0) + cambioY;
+  vert_aux.x = 0.0;
+  vert_aux.y = 0.0;
+  vert_aux.z = 0.0;
+  perfil.push_back(vert_aux);
 
-    vert_aux.z = 0.0;
-    perfil.push_back(vert_aux);
-  }
-  for (int i = 1; i <= num1 / 2; i++) {
+  vert_aux.x = 0.8;
+  vert_aux.y = 0.0;
+  vert_aux.z = 0.0;
+  perfil.push_back(vert_aux);
+
+  vert_aux.x = 0.8;
+  vert_aux.y = 0.3;
+  vert_aux.z = 0.0;
+  perfil.push_back(vert_aux);
+
+  for (int i = num1 / 2; i <= num1; i++) {
     vert_aux.x = radio1 * cos(M_PI * i / num1 - M_PI / 2.0) +
                  cambioX;  // - pq empezamos a girar desde
-    vert_aux.y = radio1 * sin(M_PI * i / num1 - M_PI / 2.0);
+    vert_aux.y = radio1 * sin(M_PI * i / num1 - M_PI / 2.0) + cambioY;
 
     vert_aux.z = 0.0;
     perfil.push_back(vert_aux);
   }
 
-  vert_aux.x = 0;
-  vert_aux.y = 0;
-
-  vert_aux.z = 0;
+  vert_aux.x = 0.2;
+  vert_aux.y = 1;
+  vert_aux.z = 0.0;
   perfil.push_back(vert_aux);
+
+  // vert_aux.x = 0;
+  // vert_aux.y = 0;
+
+  // vert_aux.z = 0;
+  // perfil.push_back(vert_aux);
 
   parametros(perfil, num2, 2, 1, 0);
 }

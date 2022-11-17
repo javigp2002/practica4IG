@@ -26,7 +26,7 @@ typedef enum {
   EXCAVADORA,
   AMETRALLADORA,
   ESFERAEJERCICIO,
-  PIRAMIDEEXAMEN,
+  CUBOEXAMEN,
   ROTACIONEXAMEN
 }
 _tipo_objeto;
@@ -56,8 +56,8 @@ _esfera esfera(1, 8, 8);
 _rotacion_PLY rotacionPLY;
 _excavadora excavadora;
 _ametralladora ametralladora;
-_esferaEjercicio esferaEjercicio (0.4,0.6,20,20);
-_piramideExamen piramideExamen;
+_barridoEjercicio barridoEjercicio (0.4,0.6,20,20);
+_cuboExamen cuboExamen;
 _rotacionExamen rotacionExamen;
 
 // _objeto_ply *ply;
@@ -167,10 +167,10 @@ void draw_objects() {
       break;
 
     case ESFERAEJERCICIO:
-      esferaEjercicio.draw(modo, 1.0, 0.0, 0.0, 5);
+      barridoEjercicio.draw(modo, 1.0, 0.0, 0.0, 5);
       break;
-    case PIRAMIDEEXAMEN:
-      piramideExamen.draw(modo, 1.0, 0.0, 0.0, 5);
+    case CUBOEXAMEN:
+      cuboExamen.draw(modo, 1.0, 0.0, 0.0, 5);
       break;
     case ROTACIONEXAMEN:
       rotacionExamen.draw(modo, 1.0, 0.0, 0.0, 5);
@@ -348,7 +348,7 @@ void normal_key(unsigned char Tecla1, int x, int y) {
       t_objeto = ESFERAEJERCICIO;
     break;
     case 'W':
-      t_objeto = PIRAMIDEEXAMEN;
+      t_objeto = CUBOEXAMEN;
     break;
 
     case 'I':
@@ -467,17 +467,17 @@ void special_key(int Tecla1, int x, int y) {
         ametralladora.giro_mirilla = ametralladora.giro_mirilla_min;
       break;
     case GLUT_KEY_F9:
-      rotacionExamen.rotacion1 += 5;
+      rotacionExamen.rotacion1 += 0.1;
       break;
     case GLUT_KEY_F10:
-      rotacionExamen.rotacion1 -= 5;
+      rotacionExamen.rotacion1 -= 0.1;
       break;
 
     case GLUT_KEY_F11:
-      rotacionExamen.rotacion2 += 0.1;
+      rotacionExamen.rotacion2 += 2;
       break;
     case GLUT_KEY_F12:
-      rotacionExamen.rotacion2 -= 0.1;
+      rotacionExamen.rotacion2 -= 2;
       break;
 
   }

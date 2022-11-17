@@ -10,7 +10,15 @@
 #include "vertex.h"
 
 const float AXIS_SIZE = 5000;
-typedef enum { POINTS, EDGES, SOLID, SOLID_COLORS, SOLID_COLORS_VERTS } _modo;
+typedef enum {
+  POINTS,
+  EDGES,
+  SOLID,
+  SOLID_COLORS,
+  SOLID_COLORS_VERTS,
+  SOLID_FLAT,
+  SOLID_SMOOTH
+} _modo;
 
 //*************************************************************************
 // clase punto
@@ -23,7 +31,7 @@ class _puntos3D {
 
   vector<_vertex3f> vertices;
 };
- 
+
 //*************************************************************************
 // clase triángulo
 //*************************************************************************
@@ -36,6 +44,9 @@ class _triangulos3D : public _puntos3D {
   void draw_solido_colores();
   void draw_solido_colores_vertices();
   void colors1();
+  // p4
+  void draw_solido_plano();
+  void draw_solid_suave();
 
   void draw(_modo modo, float r, float g, float b, float grosor);
 
@@ -43,20 +54,19 @@ class _triangulos3D : public _puntos3D {
   void colors_random(int caras_iniciales = -1);
   void colors_random_personal();
   void colors_chess(float r1, float g1, float b1, float r2, float g2, float b2);
-  void colors_Lambert_caras(float l_x, float l_y, float l_z, float r, float g, float b);
+  void colors_Lambert_caras(float l_x, float l_y, float l_z, float r, float g,
+                            float b);
 
-  //practica 4
+  // practica 4
   void calcular_normales_caras();
   void calcular_normales_vertices();
 
   vector<_vertex3i> caras;
   vector<_vertex3f> colores_caras;
 
-  //practica 4
+  // practica 4
   vector<_vertex3f> normales_caras;
   vector<_vertex3f> normales_vertices;
-
-
 };
 
 //*************************************************************************
@@ -128,9 +138,7 @@ class _cilindro : public _rotacion {
 //*************************************************************************
 
 class _cono : public _rotacion {
- 
  public:
-  
   _cono(float radio = 2, float altura = 3, int num = 10);
 };
 
@@ -267,30 +275,30 @@ class _mirilla : public _triangulos3D {
   _mirilla();
 
   void draw(_modo modo, float r, float g, float b, float grosor);
-  
-  void introduceBase(float posX, float posY, float posZ, float ancho, float alto,
-                 float fondo, _modo modo, float r, float g, float b,
-                 float grosor, bool rotate = true);
-  void introduceMira(float posX, float posY, float posZ, float ancho, float alto,
-                 float fondo, _modo modo, float r, float g, float b,
-                 float grosor, bool rotate = true);
+
+  void introduceBase(float posX, float posY, float posZ, float ancho,
+                     float alto, float fondo, _modo modo, float r, float g,
+                     float b, float grosor, bool rotate = true);
+  void introduceMira(float posX, float posY, float posZ, float ancho,
+                     float alto, float fondo, _modo modo, float r, float g,
+                     float b, float grosor, bool rotate = true);
   void introduceCampana(float posX, float posY, float posZ, float radio,
-                       float alto, _modo modo, float r, float g, float b,
-                       float grosor, bool rotate = true);
+                        float alto, _modo modo, float r, float g, float b,
+                        float grosor, bool rotate = true);
   void introduceModRotatorio(float posX, float posY, float posZ, float radio,
-                       float alto, _modo modo, float r, float g, float b,
-                       float grosor, bool rotate = true);
+                             float alto, _modo modo, float r, float g, float b,
+                             float grosor, bool rotate = true);
 
   float ancho;
   float alto;
   float fondo;
   float radio;
 
-
-float an = 1;
+  float an = 1;
   float al = 1.5;
   float f = 1;
   float r = 0.45;
+
  protected:
   _cilindro campana, modRot;
   _cubo mira;
@@ -304,8 +312,9 @@ class _canon : public _triangulos3D {
   _canon();
 
   void draw(_modo modo, float r, float g, float b, float grosor);
-  void introduceSmallCanon(float posX, float posY, float posZ, _modo modo, float radio,float alto,
-                           float r, float g, float b, float grosor);
+  void introduceSmallCanon(float posX, float posY, float posZ, _modo modo,
+                           float radio, float alto, float r, float g, float b,
+                           float grosor);
   void introduceEmbellecedor(float posX, float posY, float posZ, float radio,
                              float alto, _modo modo, float r, float g, float b,
                              float grosor);
@@ -318,7 +327,7 @@ class _canon : public _triangulos3D {
   float fondo;
   float radio;
 
-float an = 1;
+  float an = 1;
   float al = 1.5;
   float f = 1;
   float r = 0.45;
@@ -326,8 +335,6 @@ float an = 1;
  protected:
   _cilindro cilindro, canonSmall, rotationModule, embellecedor;
 };
-
-
 
 // cargador
 //************************************************************************
@@ -346,14 +353,14 @@ class _cargador : public _triangulos3D {
   float fondo;
   float radio;
 
-float an = 1;
+  float an = 1;
   float al = 1.5;
   float f = 1;
   float r = 0.45;
+
  protected:
   _cubo cubo;
 };
-
 
 //************************************************************************
 // housing
@@ -363,7 +370,8 @@ class _housing : public _triangulos3D {
  public:
   _housing();
 
-  void draw(_modo modo, float r, float g, float b, float grosor, float giro_mira=0.0);
+  void draw(_modo modo, float r, float g, float b, float grosor,
+            float giro_mira = 0.0);
   void introduceAgarre(float posX, float posY, float posZ, float radio,
                        float alto, _modo modo, float r, float g, float b,
                        float grosor, bool rotate = true);
@@ -379,10 +387,11 @@ class _housing : public _triangulos3D {
   float fondo;
   float radio;
 
-float an = 1;
+  float an = 1;
   float al = 1.5;
   float f = 1;
   float r = 0.45;
+
  protected:
   _cilindro cilindro, canonSmall, rotationModule, embellecedor;
   _cono cono;
@@ -390,8 +399,6 @@ float an = 1;
   _mirilla mira;
   _cargador cargador;
 };
-
-
 
 //************************************************************************
 // sustentación
@@ -426,15 +433,13 @@ class _ametralladora : public _triangulos3D {
   float giro_canion;
   float giro_base;
   float giro_base_up;
-  
- 
 
   float giro_base_max;
   float giro_base_min;
   float giro_base_up_max;
   float giro_base_up_min;
-  
-   float giro_mirilla;
+
+  float giro_mirilla;
   float giro_mirilla_max;
   float giro_mirilla_min;
 
@@ -448,7 +453,6 @@ class _ametralladora : public _triangulos3D {
   _cargador cargador;
 };
 
-
 // cargador
 //************************************************************************
 
@@ -458,7 +462,6 @@ class _ejercicioExamen : public _triangulos3D {
 
   void draw(_modo modo, float r, float g, float b, float grosor);
 
-
   float ancho;
   float alto;
   float fondo;
@@ -467,34 +470,32 @@ class _ejercicioExamen : public _triangulos3D {
   _cilindro cilindro;
 };
 
-
-
 //*************************************************************************
 // clase esferaEjercicio
 //*************************************************************************
 
-class _esferaEjercicio : public _rotacion {
+class _barridoEjercicio : public _rotacion {
  public:
-  _esferaEjercicio(float radio1 =0.4, float radio2=0.6,  int num1 = 8, int num2 = 20);
+  _barridoEjercicio(float radio1 = 0.4, float ancho = 0.6, int num1 = 8,
+                    int num2 = 20);
 };
 
-
-class _piramideExamen: public _triangulos3D{
-  public:
-   _piramideExamen(float tam = 0.5, float al = 1.0);
+class _cuboExamen : public _triangulos3D {
+ public:
+  _cuboExamen(float tam = 0.5, float al = 1.0);
 };
 
-class _rotacionExamen: public _triangulos3D{
-  public:
-   _rotacionExamen();
-    void draw(_modo modo, float r, float g, float b, float grosor);
-    void introduceSegundoNivel(_modo modo, float r, float g,
-                               float b, float grosor);
+class _rotacionExamen : public _triangulos3D {
+ public:
+  _rotacionExamen();
+  void draw(_modo modo, float r, float g, float b, float grosor);
+  void introduceSegundoNivel(_modo modo, float r, float g, float b,
+                             float grosor);
 
-    float alto, radio, ancho, fondo,  rotacion1,  rotacion2;
+  float alto, radio, ancho, fondo, rotacion1, rotacion2;
 
-   private:
-    _cubo cubo;
-    _cilindro cilindro;
-    _cono cono;
+ private:
+  _cubo prisma;
+  _cilindro cilindro;
+  _esfera aspa = _esfera(1, 20, 20);
 };
