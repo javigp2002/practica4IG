@@ -46,7 +46,7 @@ class _triangulos3D : public _puntos3D {
   void colors1();
   // p4
   void draw_solido_plano();
-  void draw_solid_suave();
+  void draw_solido_suave();
 
   void draw(_modo modo, float r, float g, float b, float grosor);
 
@@ -67,6 +67,11 @@ class _triangulos3D : public _puntos3D {
   // practica 4
   vector<_vertex3f> normales_caras;
   vector<_vertex3f> normales_vertices;
+
+  // Material
+  _vertex4f ambiente_difuso;
+  _vertex4f especular;
+  float brillo;
 };
 
 //*************************************************************************

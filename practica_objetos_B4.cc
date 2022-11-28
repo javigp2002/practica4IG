@@ -28,8 +28,7 @@ typedef enum {
   ESFERAEJERCICIO,
   CUBOEXAMEN,
   ROTACIONEXAMEN
-}
-_tipo_objeto;
+} _tipo_objeto;
 _tipo_objeto t_objeto = CUBO;
 _modo modo = POINTS;
 
@@ -43,7 +42,7 @@ GLfloat Size_x, Size_y, Front_plane, Back_plane;
 
 // variables que determninan la posicion y tamaño de la ventana X
 int Window_x = 50, Window_y = 50, Window_width = 650, Window_high = 650;
-
+float mov_camara = 0;
 // objetos
 _cubo cubo;
 _piramide piramide(0.85, 1.3);
@@ -56,7 +55,7 @@ _esfera esfera(1, 8, 8);
 _rotacion_PLY rotacionPLY;
 _excavadora excavadora;
 _ametralladora ametralladora;
-_barridoEjercicio barridoEjercicio (0.4,0.6,20,20);
+_barridoEjercicio barridoEjercicio(0.4, 0.6, 20, 20);
 _cuboExamen cuboExamen;
 _rotacionExamen rotacionExamen;
 
@@ -178,6 +177,30 @@ void draw_objects() {
   }
 }
 
+//***************************************************************************
+// luces
+//***************************************************************************
+void luces(float alfa) {
+  GLfloat luz_ambiente[] = {0.2, 0.2, 0.2, 1.0},
+          luz_difusa[] = {1.0, 1.0, 1.0, 1.0},
+          luz_especular[] = {1.0, 0.0, 1.0, 1.0},
+          luz_posicion[] = {0.0, 20.0, 20.0, 1.0};
+  // ult valor en 0 entonces la luz en el inf --> mirar transp
+
+  // solo aplica a la luz 1
+  glLightfv(GL_LIGHT1, GL_AMBIENT, luz_ambiente);
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, luz_difusa);
+  glLightfv(GL_LIGHT1, GL_SPECULAR, luz_especular);
+  glPushMatrix();
+  glRotatef(alfa,0,1,0); //esto es el que realiza de vd la traslación de la luz
+
+  glLightfv(GL_LIGHT1, GL_POSITION, luz_posicion);
+
+  glPopMatrix();
+  glEnable(GL_LIGHT1);
+  glDisable(GL_LIGHT0);  // desactivar la por defecto
+}
+
 //**************************************************************************
 //
 //***************************************************************************
@@ -185,6 +208,8 @@ void draw_objects() {
 void draw(void) {
   clean_window();
   change_observer();
+  luces(mov_camara);
+  cout << mov_camara << endl;
   draw_axis();
   draw_objects();
   glutSwapBuffers();
@@ -227,7 +252,7 @@ void animacionAmetralladora() {
       }
 
     } else if (estoyDeVuelta && !estoyDeVuelta2) {
-      if (ametralladora.giro_canion < vueltasCanon*2)
+      if (ametralladora.giro_canion < vueltasCanon * 2)
         ametralladora.giro_canion += 5;
       else if (ametralladora.giro_base_up < 0)
         ametralladora.giro_base_up++;
@@ -246,13 +271,13 @@ void animacionAmetralladora() {
         ametralladora.giro_mirilla++;
       else if (ametralladora.giro_base_up < ametralladora.giro_base_up_max)
         ametralladora.giro_base_up++;
-      else if (ametralladora.giro_canion < vueltasCanon*3)
+      else if (ametralladora.giro_canion < vueltasCanon * 3)
         ametralladora.giro_canion += 5;
       else {
         estoyDeVuelta = true;
       }
     } else {
-      if (ametralladora.giro_canion < vueltasCanon*4)
+      if (ametralladora.giro_canion < vueltasCanon * 4)
         ametralladora.giro_canion += 5;
       else if (ametralladora.giro_base_up > 0)
         ametralladora.giro_base_up--;
@@ -266,7 +291,6 @@ void animacionAmetralladora() {
         ametralladora.giro_canion = 0;
       }
     }
-
 
     glutPostRedisplay();
   }
@@ -298,7 +322,10 @@ void normal_key(unsigned char Tecla1, int x, int y) {
       modo = SOLID_COLORS;
       break;
     case '5':
-      modo = SOLID_COLORS_VERTS;
+      modo = SOLID_FLAT;
+      break;
+    case '6':
+      modo = SOLID_SMOOTH;
       break;
 
     case 'P':
@@ -316,15 +343,19 @@ void normal_key(unsigned char Tecla1, int x, int y) {
     case 'X':
       t_objeto = EXTRUSION;
       break;
-    case 'E':
-      t_objeto = ESFERA;
+    case 'L':
+      t_objeto = CILINDRO;
       break;
     case 'N':
       t_objeto = CONO;
       break;
-    case 'L':
-      t_objeto = CILINDRO;
+    case 'E':
+      t_objeto = ESFERA;
       break;
+     case 'A':
+      t_objeto = AMETRALLADORA;
+      break;
+    
     case 'T':
       t_objeto = ROTACION_PLY;
       break;
@@ -333,9 +364,7 @@ void normal_key(unsigned char Tecla1, int x, int y) {
       t_objeto = EXCAVADORA;
       break;
 
-    case 'A':
-      t_objeto = AMETRALLADORA;
-      break;
+   
 
     case 'S':
       if (hay_animacion)
@@ -346,15 +375,14 @@ void normal_key(unsigned char Tecla1, int x, int y) {
 
     case 'Z':
       t_objeto = ESFERAEJERCICIO;
-    break;
+      break;
     case 'W':
       t_objeto = CUBOEXAMEN;
-    break;
+      break;
 
     case 'I':
       t_objeto = ROTACIONEXAMEN;
-    break;
-    
+      break;
   }
   glutPostRedisplay();
 }
@@ -474,12 +502,12 @@ void special_key(int Tecla1, int x, int y) {
       break;
 
     case GLUT_KEY_F11:
-      rotacionExamen.rotacion2 += 2;
+      // rotacionExamen.rotacion2 += 2;
+      mov_camara += 5;
       break;
     case GLUT_KEY_F12:
-      rotacionExamen.rotacion2 -= 2;
+      // rotacionExamen.rotacion2 -= 2;
       break;
-
   }
 
   glutPostRedisplay();
