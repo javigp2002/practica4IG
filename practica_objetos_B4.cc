@@ -43,6 +43,7 @@ GLfloat Size_x, Size_y, Front_plane, Back_plane;
 // variables que determninan la posicion y tamaño de la ventana X
 int Window_x = 50, Window_y = 50, Window_width = 650, Window_high = 650;
 float mov_camara = 0;
+bool act_cam_2 = false;
 // objetos
 _cubo cubo;
 _piramide piramide(0.85, 1.3);
@@ -180,24 +181,45 @@ void draw_objects() {
 //***************************************************************************
 // luces
 //***************************************************************************
-void luces(float alfa) {
+void luces(float mov_cam_1, bool activar_cam_2) {
   GLfloat luz_ambiente[] = {0.2, 0.2, 0.2, 1.0},
           luz_difusa[] = {1.0, 1.0, 1.0, 1.0},
-          luz_especular[] = {1.0, 0.0, 1.0, 1.0},
-          luz_posicion[] = {0.0, 20.0, 20.0, 1.0};
+          luz_especular[] = {1.0, 1.0, 1.0, 1.0},
+          luz_posicion[] = {X_LAMBERT, Y_LAMBERT, Z_LAMBERT, 1.0};
   // ult valor en 0 entonces la luz en el inf --> mirar transp
 
   // solo aplica a la luz 1
+
   glLightfv(GL_LIGHT1, GL_AMBIENT, luz_ambiente);
   glLightfv(GL_LIGHT1, GL_DIFFUSE, luz_difusa);
   glLightfv(GL_LIGHT1, GL_SPECULAR, luz_especular);
-  glPushMatrix();
-  glRotatef(alfa,0,1,0); //esto es el que realiza de vd la traslación de la luz
-
   glLightfv(GL_LIGHT1, GL_POSITION, luz_posicion);
 
-  glPopMatrix();
-  glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHT1);
+
+  if (activar_cam_2) {
+    GLfloat luz_ambiente2[] = {0, 0.0, 0.0, 1.0},
+            luz_difusa2[] = {1.0, 0, 0, 0},
+            luz_especular2[] = {1.0, 0, 0, 1.0},
+            luz_posicion2[] = {0.0, 0.0, 20.0, 1.0};
+
+    glLightfv(GL_LIGHT2, GL_AMBIENT, luz_ambiente2);
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, luz_difusa2);
+    glLightfv(GL_LIGHT2, GL_SPECULAR, luz_especular2);
+    glLightfv(GL_LIGHT2, GL_POSITION, luz_posicion2);
+
+    // luz 2
+
+    glPushMatrix();
+    glRotatef(mov_cam_1, 0, 1,
+              0);  // esto es el que realiza de vd la traslación de la luz
+    glLightfv(GL_LIGHT2, GL_POSITION, luz_posicion2);
+    glPopMatrix();
+
+    glEnable(GL_LIGHT2);
+  } else
+    glDisable(GL_LIGHT2);
+
   glDisable(GL_LIGHT0);  // desactivar la por defecto
 }
 
@@ -208,8 +230,7 @@ void luces(float alfa) {
 void draw(void) {
   clean_window();
   change_observer();
-  luces(mov_camara);
-  cout << mov_camara << endl;
+  luces(mov_camara, act_cam_2);
   draw_axis();
   draw_objects();
   glutSwapBuffers();
@@ -352,10 +373,10 @@ void normal_key(unsigned char Tecla1, int x, int y) {
     case 'E':
       t_objeto = ESFERA;
       break;
-     case 'A':
+    case 'A':
       t_objeto = AMETRALLADORA;
       break;
-    
+
     case 'T':
       t_objeto = ROTACION_PLY;
       break;
@@ -363,8 +384,6 @@ void normal_key(unsigned char Tecla1, int x, int y) {
     case 'V':
       t_objeto = EXCAVADORA;
       break;
-
-   
 
     case 'S':
       if (hay_animacion)
@@ -494,11 +513,15 @@ void special_key(int Tecla1, int x, int y) {
       if (ametralladora.giro_mirilla < ametralladora.giro_mirilla_min)
         ametralladora.giro_mirilla = ametralladora.giro_mirilla_min;
       break;
+    /*-------------------PRACTICA4-------------------*/
     case GLUT_KEY_F9:
       rotacionExamen.rotacion1 += 0.1;
+      // act_cam_2 = true;
       break;
     case GLUT_KEY_F10:
-      rotacionExamen.rotacion1 -= 0.1;
+      // rotacionExamen.rotacion1 -= 0.1;
+
+      act_cam_2 = act_cam_2 ? false : true;
       break;
 
     case GLUT_KEY_F11:
@@ -507,6 +530,7 @@ void special_key(int Tecla1, int x, int y) {
       break;
     case GLUT_KEY_F12:
       // rotacionExamen.rotacion2 -= 2;
+      mov_camara -= 5;
       break;
   }
 

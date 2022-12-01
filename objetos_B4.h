@@ -20,6 +20,14 @@ typedef enum {
   SOLID_SMOOTH
 } _modo;
 
+const int X_LAMBERT = 0, Y_LAMBERT = -20, Z_LAMBERT = -60;
+
+
+struct material{
+    _vertex4f ambiente_dif;
+    _vertex4f spec;
+    float brillo;
+  };
 //*************************************************************************
 // clase punto
 //*************************************************************************
@@ -72,6 +80,15 @@ class _triangulos3D : public _puntos3D {
   _vertex4f ambiente_difuso;
   _vertex4f especular;
   float brillo;
+
+  void cambiarMaterial(material m);
+  material brass{
+      {0.780, 0.569, 0.114, 1.0}, {0.992, 0.941, 0.808, 1.0}, 27.897};
+
+  material gold {{0.752,0.606,0.226,1.0}, {0.628,0.555,0.366,1.0},51.2 };
+  material blackPlastic {{0.01,0.01,0.01,1.0}, {0.5,0.5,0.5,1.0},32 };
+  material polishedCopper{
+      {0.551, 0.212, 0.066, 1.0}, {0.581, 0.223, 0.069, 1.0}, 51.2};
 };
 
 //*************************************************************************

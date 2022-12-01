@@ -34,6 +34,7 @@ void _puntos3D::draw_puntos(float r, float g, float b, int grosor) {
   // glDrawArrays(GL_POINTS, 0, vertices.size());
 }
 
+ 
 //*************************************************************************
 // _triangulos3D
 //*************************************************************************
@@ -42,7 +43,9 @@ _triangulos3D::_triangulos3D() {
   ambiente_difuso = _vertex4f(1.0, 0.8, 0.0, 1.0);
   especular =
       _vertex4f(0.5, 0.5, 0.5, 1.0);  // pq la luz es blanca os ponemos iguaes
-  brillo = 120;                       // entre 0 y 128 --> 0 es maxima
+  brillo = 100;                       // entre 0 y 127 --> 0 es maxima
+
+  
 }
 
 //*************************************************************************
@@ -73,6 +76,13 @@ void _triangulos3D::draw_aristas(float r, float g, float b, int grosor) {
   // glEnableClientState(GL_VERTEX_ARRAY);
   // glVertexPointer(3, GL_FLOAT, 0, &vertices[0]);
   // glDrawElements(GL_TRIANGLES, caras.size() * 3, GL_UNSIGNED_INT, &caras[0]);
+}
+
+
+void _triangulos3D::cambiarMaterial(material m){
+  ambiente_difuso = m.ambiente_dif;
+  especular = m.spec;
+  brillo = m.brillo;
 }
 
 //*************************************************************************
@@ -148,8 +158,8 @@ void _triangulos3D::draw_solido_colores_vertices() {
 
 void _triangulos3D::draw_solido_plano() {
   glEnable(GL_LIGHTING);
-  glShadeModel(GL_FLAT);
-  glEnable(GL_NORMALIZE);
+  // glShadeModel(GL_FLAT);
+  // glEnable(GL_NORMALIZE);
 
 
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, (GLfloat *)&ambiente_difuso);
@@ -162,16 +172,16 @@ void _triangulos3D::draw_solido_plano() {
   int num_tot_caras = caras.size();
 
   for (int i = 0; i < num_tot_caras; i++) {
-    glNormal3f(normales_caras[i].x, normales_caras[i].y,
-               normales_caras[i].z);  // opengl colorea
+    glNormal3f(normales_caras[i].r, normales_caras[i].g,
+               normales_caras[i].b);  // opengl colorea
 
     glVertex3fv((GLfloat *)&vertices[caras[i]._0]);
     glVertex3fv((GLfloat *)&vertices[caras[i]._1]);
     glVertex3fv((GLfloat *)&vertices[caras[i]._2]);
   }
-
+glEnd();
   glDisable(GL_LIGHTING);
-  glEnd();
+  
 }
 
 
@@ -203,9 +213,9 @@ void _triangulos3D::draw_solido_suave() {
     glNormal3fv((GLfloat *)&normales_vertices[caras[i]._2]);
     glVertex3fv((GLfloat *)&vertices[caras[i]._2]);
   }
+  glEnd();
 
   glDisable(GL_LIGHTING);
-  glEnd();
 }
 
 //*************************************************************************
@@ -491,7 +501,9 @@ _cubo::_cubo(float tam) {
   calcular_normales_caras();
   calcular_normales_vertices();
   // colores caras
-  colors_random();
+  // colors_random();
+   colors_Lambert_caras(X_LAMBERT, Y_LAMBERT, Z_LAMBERT, 1.0, 0.8,
+                       0.0);  // estamos posicionando el foco
 }
 
 //*************************************************************************
@@ -592,7 +604,7 @@ void _objeto_ply::parametros(char *archivo) {
   // forma P4
   calcular_normales_caras();
   calcular_normales_vertices();
-  colors_Lambert_caras(0.0, 0, 20.0, 1.0, 0.8,
+   colors_Lambert_caras(X_LAMBERT, Y_LAMBERT, Z_LAMBERT, 1.0, 0.8,
                        0.0);  // estamos posicionando el foco
 }
 
@@ -727,7 +739,7 @@ void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tipo,
     calcular_normales_vertices();
   // colores
 
-  colors_Lambert_caras(0, -20, 0, 1.0, 0.8,
+     colors_Lambert_caras(X_LAMBERT, Y_LAMBERT, Z_LAMBERT, 1.0, 0.8,
                        0.0);  // estamos posicionando el foco
 }
 
@@ -993,6 +1005,8 @@ _sustentacion::_sustentacion() {
   fondo = 0.8;
   radio = 0.15;
   base.colors_chess(1.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+
+  base.cambiarMaterial(brass);
 };
 
 void _sustentacion::draw(_modo modo, float r, float g, float b, float grosor) {
@@ -1082,6 +1096,11 @@ _canon::_canon() {
   canonSmall.colors_chess(0.5, 0.5, 0.5, 0.65, 0.65, 0.65);
   rotationModule.colors_chess(0.8, 0.8, 0.8, 0.8, 0.8, 0.8);
   embellecedor.colors_chess(0.8, 0.8, 0.8, 0.8, 0.8, 0.8);
+
+  cilindro.cambiarMaterial(blackPlastic);
+  canonSmall.cambiarMaterial(blackPlastic);
+  rotationModule.cambiarMaterial(gold);
+  embellecedor.cambiarMaterial(gold);
 }
 
 void _canon::draw(_modo modo, float r, float g, float b, float grosor) {
@@ -1204,6 +1223,8 @@ _cargador::_cargador() {
   alto = 1.5;
 
   colors_chess(1.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+
+  cubo.cambiarMaterial(polishedCopper);
 }
 
 void _cargador::draw(_modo modo, float r, float g, float b, float grosor) {
@@ -1260,6 +1281,10 @@ _housing::_housing() {
   cilindro.colors_chess(0.8, 0.8, 0.8, 0.9, 0.9, 0.9);
   cubo.colors_chess(0.8, 0.8, 0.8, 0.9, 0.9, 0.9);
   cono.colors_chess(0.8, 0.8, 0.8, 0.9, 0.9, 0.9);
+
+  cilindro.cambiarMaterial(gold);
+  cubo.cambiarMaterial(gold);
+  cono.cambiarMaterial(gold);
 }
 
 void _housing::draw(_modo modo, float r, float g, float b, float grosor,
@@ -1421,6 +1446,10 @@ _mirilla::_mirilla() {
 
   campana = _cilindro(RADIOCILINDRO, ALTURACILINDRO, 30, 0, 0);
   modRot = _cilindro(RADIOCILINDRO, ALTURACILINDRO, 30, 1, 1);
+
+  campana.cambiarMaterial(blackPlastic);
+  modRot.cambiarMaterial(blackPlastic);
+  mira.cambiarMaterial(blackPlastic);
 }
 
 void _mirilla::introduceMira(float posX, float posY, float posZ, float ancho,
@@ -1497,6 +1526,16 @@ _sustentacionAmetralladora::_sustentacionAmetralladora() {
   ancho = 1;
   alto = 0.2;
   fondo = 1;
+
+  base.cambiarMaterial(brass);
+  pataIzda.cambiarMaterial(brass);
+  pataDcha.cambiarMaterial(brass);
+  pataAtras.cambiarMaterial(brass);
+  baseIzda.cambiarMaterial(brass);
+  baseDcha.cambiarMaterial(brass);
+  baseAtras.cambiarMaterial(brass);
+  paloBase.cambiarMaterial(brass);
+
 };
 
 void _sustentacionAmetralladora::draw(_modo modo, float r, float g, float b,

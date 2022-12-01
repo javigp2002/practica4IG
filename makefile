@@ -11,7 +11,7 @@ CPPFLAGS:= -Wall -fmax-errors=2 -g
 
 CC= g++
 
-x: $(EJECUTABLE)
+x: clean $(EJECUTABLE)
 	./$(EJECUTABLE) beethoven ejemplo
 
 $(EJECUTABLE): $(MODULOS)	
