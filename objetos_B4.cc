@@ -158,8 +158,8 @@ void _triangulos3D::draw_solido_colores_vertices() {
 
 void _triangulos3D::draw_solido_plano() {
   glEnable(GL_LIGHTING);
-  // glShadeModel(GL_FLAT);
-  // glEnable(GL_NORMALIZE);
+  glShadeModel(GL_FLAT);
+  glEnable(GL_NORMALIZE);
 
 
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, (GLfloat *)&ambiente_difuso);
@@ -1224,7 +1224,7 @@ _cargador::_cargador() {
 
   colors_chess(1.0, 1.0, 0.0, 0.0, 0.0, 1.0);
 
-  cubo.cambiarMaterial(polishedCopper);
+  cubo.cambiarMaterial(obsidian);
 }
 
 void _cargador::draw(_modo modo, float r, float g, float b, float grosor) {
