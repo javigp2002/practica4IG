@@ -725,22 +725,24 @@ void _rotacion::parametros(vector<_vertex3f> perfil, int num, int tipo,
     float norma;
     int n_v = vertices.size();
     normales_vertices.resize(n_v);
-    for (int i = 0; i < n_v; i++) {
-      norma = sqrt(normales_vertices[i].x * normales_vertices[i].x +
-                   normales_vertices[i].y * normales_vertices[i].y +
-                   normales_vertices[i].z * normales_vertices[i].z);
 
-      normales_vertices[i].x = normales_vertices[i].x / norma;
-      normales_vertices[i].y = normales_vertices[i].y / norma;
-      normales_vertices[i].z = normales_vertices[i].z / norma;
+    for (int i = 0; i < n_v; i++) {
+      norma = sqrt(vertices[i].x * vertices[i].x +
+                   vertices[i].y * vertices[i].y +
+                   vertices[i].z * vertices[i].z);
+
+      normales_vertices[i].x = vertices[i].x / norma;
+      normales_vertices[i].y = vertices[i].y / norma;
+      normales_vertices[i].z = vertices[i].z / norma;
     }
 
-  } else
+  } else 
     calcular_normales_vertices();
   // colores
 
      colors_Lambert_caras(X_LAMBERT, Y_LAMBERT, Z_LAMBERT, 1.0, 0.8,
                        0.0);  // estamos posicionando el foco
+
 }
 
 //************************************************************************
